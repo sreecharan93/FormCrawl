@@ -22,8 +22,6 @@
 
 
 
-
-
 from bs4 import BeautifulSoup
 import re
 import requests
@@ -66,15 +64,19 @@ for i in range(len(cikList)):
 	data = r.text
 	soup = BeautifulSoup(data) # Initializing to crawl again
 	linkList=[] # List of all links from the CIK page
+	# If the link is .htm convert it to .html
 	for link in soup.find_all('filinghref'):
-    		linkList.append(link.string)
+		URL = link.string
+		if link.string.split(".")[len(link.string.split("."))-1] == "htm":
+			URL+="l"
+    		linkList.append(URL)
 	linkListFinal = linkList
 	docList = [] # List of URL to the text documents
 	docNameList = [] # List of document names
 
 	for k in range(len(linkListFinal)):
 		requiredURL = str(linkListFinal[k])[0:len(linkListFinal[k])-11]
-		txtdoc = "http://www.sec.gov/"+requiredURL+".txt"
+		txtdoc = requiredURL+".txt"
 		docname = txtdoc.split("/")[len(txtdoc.split("/"))-1]
 		docList.append(txtdoc)
 		docNameList.append(docname)
